@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>update replicator</title>
+  <title>Update Replicator</title>
   <style>
     /* General styles for responsiveness */
     @font-face {
-  	  font-family: sfpro;
-  	  src: url(sfpro.OTF);
-	}
+      font-family: sfpro;
+      src: url(sfpro.otf);
+    }
+
     body {
       font-family: sfpro;
       margin: 0;
@@ -21,7 +22,7 @@
       min-height: 100vh;
       background: #111;
       text-align: center;
-      user-select: none;	
+      user-select: none;
     }
 
     /* Title */
@@ -89,18 +90,27 @@
     .wifi-very-weak {
       color: #9c27b0; /* Purple */
     }
+
+    /* Update code section */
+    .update-code {
+      margin-top: 10px;
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <h1>update in progress</h1>
+  <h1>Update in Progress</h1>
   <div class="loading-container">
     <div class="loading-bar">
       <div class="progress" id="progress-bar"></div>
     </div>
     <div class="loading-info">
-      <span id="update-size">update size: calculating...</span>
-      <span id="remaining-data">remaining: calculating...</span>
-      <span id="wifi-status" class="wifi-weak">wi-fi signal: Weak</span>
+      <span id="update-size">Update size: Calculating...</span>
+      <span id="remaining-data">Remaining: Calculating...</span>
+      <span id="wifi-status" class="wifi-weak">Wi-Fi Signal: Weak</span>
+    </div>
+    <div class="update-code">
+      <span id="update-code">Update Code: Calculating...</span>
     </div>
   </div>
   <script>
@@ -114,9 +124,20 @@
     const updateSizeText = document.getElementById('update-size');
     const remainingDataText = document.getElementById('remaining-data');
     const wifiStatusText = document.getElementById('wifi-status');
+    const updateCodeText = document.getElementById('update-code');
+
+    // Function to generate a random string of 16 letters and numbers
+    function generateUpdateCode() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < 16; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
 
     // Set initial update size
-    updateSizeText.textContent = `update size: ${totalUpdateSize} GB`;
+    updateSizeText.textContent = `Update size: ${totalUpdateSize} GB`;
 
     // Function to update the progress and data
     function updateProgress() {
@@ -126,7 +147,7 @@
 
       // Update UI
       progressBar.style.width = progress + '%';
-      remainingDataText.textContent = `remaining: ${remainingData} GB`;
+      remainingDataText.textContent = `Remaining: ${remainingData} GB`;
 
       // Reset when progress reaches 90%
       if (progress >= 90) {
@@ -157,7 +178,7 @@
       }
 
       // Update Wi-Fi status
-      wifiStatusText.textContent = `wi-fi signal: ${selectedState.label}`;
+      wifiStatusText.textContent = `Wi-Fi Signal: ${selectedState.label}`;
       wifiStatusText.className = selectedState.class;
     }
 
@@ -167,6 +188,9 @@
     // Update Wi-Fi signal every 10 seconds
     updateWifiStatus(); // Initial call
     setInterval(updateWifiStatus, 10000);
+
+    // Set initial update code
+    updateCodeText.textContent = `Update Code: ${generateUpdateCode()}`;
   </script>
 </body>
 </html>
