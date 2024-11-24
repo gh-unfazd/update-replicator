@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>update replicator</title>
+  <style>
+    /* General styles for responsiveness */
+    @font-face {
+  	  font-family: sfpro;
+  	  src: url(sfpro.otf);
+	}
+    body {
+      font-family: sfpro;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+      text-align: center;
+    }
+
+    /* Title */
+    h1 {
+      font-family: sfpro;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    /* Main container */
+    .loading-container {
+      width: 90%;
+      max-width: 600px;
+    }
+
+    /* Loading bar background */
+    .loading-bar {
+      position: relative;
+      width: 100%;
+      height: 7px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    /* The "progress" element inside the bar */
+    .loading-bar .progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: #3498db;
+      width: 0%; /* Initial width */
+      border-radius: 10px;
+      transition: width 1s linear; /* Smooth width update */
+    }
+
+    /* Misc data container */
+    .loading-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      color: white;
+      margin-top: 10px;
+    }
+
+    /* Individual info blocks */
+    .loading-info span {
+      flex: 1;
+      text-align: center;
+    }
+
+    /* Wi-Fi status colors */
+    .wifi-good {
+      color: #4caf50; /* Green */
+    }
+    .wifi-medium {
+      color: #ff9800; /* Orange */
+    }
+    .wifi-weak {
+      color: #f44336; /* Red */
+    }
+    .wifi-very-weak {
+      color: #9c27b0; /* Purple */
+    }
+  </style>
+</head>
+<body>
+  <h1>update in progress</h1>
+  <div class="loading-container">
+    <div class="loading-bar">
+      <div class="progress" id="progress-bar"></div>
+    </div>
+    <div class="loading-info">
+      <span id="update-size">update size: calculating...</span>
+      <span id="remaining-data">remaining: calculating...</span>
+      <span id="wifi-status" class="wifi-weak">wi-fi signal: Weak</span>
+    </div>
+  </div>
+  <script>
+    // Generate a random update size between 5GB and 15GB
+    const totalUpdateSize = (Math.random() * 10 + 5).toFixed(2); // 5GB to 15GB
+    const totalTime = 86400; // seconds for the animation (24 hours for demo purposes)
+    let elapsedTime = 0; // seconds
+    const updateInterval = 1000; // 1 second updates
+    const progressBar = document.getElementById('progress-bar');
+    const percentageText = document.getElementById('percentage');
+    const updateSizeText = document.getElementById('update-size');
+    const remainingDataText = document.getElementById('remaining-data');
+    const wifiStatusText = document.getElementById('wifi-status');
+
+    // Set initial update size
+    updateSizeText.textContent = `update size: ${totalUpdateSize} GB`;
+
+    // Function to update the progress and data
+    function updateProgress() {
+      elapsedTime += updateInterval / 1000;
+      const progress = Math.min((elapsedTime / totalTime) * 100, 90); // Never go beyond 90%
+      const remainingData = (totalUpdateSize * (1 - progress / 100)).toFixed(2);
+
+      // Update UI
+      progressBar.style.width = progress + '%';
+      remainingDataText.textContent = `remaining: ${remainingData} GB`;
+
+      // Reset when progress reaches 90%
+      if (progress >= 90) {
+        elapsedTime = 0;
+      }
+    }
+
+    // Function to update Wi-Fi signal strength
+    function updateWifiStatus() {
+      // Define Wi-Fi states
+      const wifiStates = [
+        { label: 'Very Weak', class: 'wifi-very-weak', probability: 40 }, // Most likely
+        { label: 'Weak', class: 'wifi-weak', probability: 30 },
+        { label: 'Medium', class: 'wifi-medium', probability: 20 },
+        { label: 'Good', class: 'wifi-good', probability: 10 } // Least likely
+      ];
+
+      // Select a state based on weighted probability
+      const random = Math.random() * 100;
+      let cumulativeProbability = 0;
+      let selectedState = wifiStates[0];
+      for (const state of wifiStates) {
+        cumulativeProbability += state.probability;
+        if (random <= cumulativeProbability) {
+          selectedState = state;
+          break;
+        }
+      }
+
+      // Update Wi-Fi status
+      wifiStatusText.textContent = `wi-fi signal: ${selectedState.label}`;
+      wifiStatusText.className = selectedState.class;
+    }
+
+    // Start the progress update
+    setInterval(updateProgress, updateInterval);
+
+    // Update Wi-Fi signal every 10 seconds
+    updateWifiStatus(); // Initial call
+    setInterval(updateWifiStatus, 10000);
+  </script>
+</body>
+</html>
